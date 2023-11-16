@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="row">
+
+    <div class="col-sm">
+        Mais d'où voit-on
+    </div>
+
+    <div class="col-sm">
+        <form style="width:500px;">
+
+            <div class="dropdown">
+                <input type="text" class="jAuto form-control dropdown-toggle"
+                       placeholder="Saisissez un lieu . . ." autocomplete="off">
+                <div class="dropdown-menu">
+                    <i class="hasNoResults">No matching results</i>
+                    <div class="list-autocomplete">
+                        @foreach (var lieu in ViewBag.Lieux)
+                        {
+                            <button type="button" class="dropdown-item">@lieu.Nom</button>
+                        }
+                    </div>
+                    <hr>
+                    <button type="button" class="dropdown-item">Voir la liste de tous les lieux</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-sm">
+        ?
+    </div>
+
+</div>
+
+

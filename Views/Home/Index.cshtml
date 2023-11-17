@@ -4,8 +4,8 @@
 
 <div class="row">
 
-    <div class="col-sm">
-        Mais d'où voit-on
+    <div class="col-sm" style="text-align:right;">
+        <h2>Mais d'où voit-on</h2>
     </div>
 
     <div class="col-sm">
@@ -15,12 +15,16 @@
                 <input type="text" class="jAuto form-control dropdown-toggle"
                        placeholder="Saisissez un lieu . . ." autocomplete="off">
                 <div class="dropdown-menu">
-                    <i class="hasNoResults">No matching results</i>
+                    <i class="hasNoResults">Aucun résultat</i>
                     <div class="list-autocomplete">
                         @foreach (var lieu in ViewBag.Lieux)
                         {
-                            <button type="button" class="dropdown-item">@lieu.Nom</button>
+                            <button type="button" class="btn_lieu dropdown-item" data-lieu_id="@lieu.Id">@lieu.Nom</button>
                         }
+                    
+                        <button type="button" class="btn_lieu dropdown-item" data-lieu_id="1">test 1</button>
+                        <button type="button" class="btn_lieu dropdown-item" data-lieu_id="2">test 2</button>
+                        <button type="button" class="btn_lieu dropdown-item" data-lieu_id="3">test 3</button>
                     </div>
                     <hr>
                     <button type="button" class="dropdown-item">Voir la liste de tous les lieux</button>
@@ -30,9 +34,36 @@
     </div>
 
     <div class="col-sm">
-        ?
+        <h2>?</h2>
     </div>
 
 </div>
 
+
+<div class="row">
+    <div id="map" style=" height: 300px"></div>
+</div>
+
+
+
+<script>
+    var map = L.map('map').setView([46.86, 3.16], 4);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    var marker_lieu;
+
+    $(document).on('click', '.btn_lieu', function () {
+        console.log($(this).text())
+        console.log($(this).data('lieu_id'))
+
+        $.get("/Home/GetLieu/" + $(this).data('lieu_id'), null, function (data) {
+            marker_lieu = L.marker([data.latitude, data.longitude]).addTo(map);
+            map.flyTo([data.latitude, data.longitude], 15);
+        });
+
+    });
+</script>
 

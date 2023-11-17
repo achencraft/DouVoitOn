@@ -6,14 +6,13 @@ using System.Diagnostics;
 
 namespace DouVoitOn.Controllers
 {
-    public class HomeController : Controller
+    public class PanneauController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<PanneauController> _logger;
         private readonly ApplicationDbContext _context;
 
-        public List<Lieu> _lieux { get; set; } = default!;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+        public PanneauController(ILogger<PanneauController> logger, ApplicationDbContext context)
         {
             _logger = logger;
             _context = context;
@@ -21,21 +20,10 @@ namespace DouVoitOn.Controllers
 
         public async Task<IActionResult> Index()
         {
-            _lieux = await _context.Lieux.ToListAsync();
-            ViewBag.Lieux = _lieux;
-            return View();
+            return View("/Views/Contribuer/Panneau/Index.cshtml");
         }
 
-        public async Task<Lieu> GetLieu(int id)
-        {
-            _lieux = await _context.Lieux.ToListAsync();
-            return _lieux.Where(x => x.Id == id).First();
-        }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

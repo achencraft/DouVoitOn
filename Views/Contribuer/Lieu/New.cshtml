@@ -1,0 +1,114 @@
+﻿@model DouVoitOn.Models.Lieu
+
+@{
+    ViewData["Title"] = "Lieu";
+}
+
+<h1>Créer un nouveau lieu</h1>
+
+<p>Vous pouvez demander la création d'un nouveau lieu à l'aide de formulaire.<br />
+   Le nouveau ne sera pas activé de suite, un administrateur doit l'approuver pour éviter les doublons.
+</p>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Nom, htmlAttributes: new { @class = "control-label col-md-2" }) 
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.Nom, new { htmlAttributes = new { @class = "form-control", placeholder = "centre-ville", @required="required" } })
+                @Html.ValidationMessageFor(model => model.Nom, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Pays, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-sm-10">
+                @Html.DropDownListFor(model => model.Pays, new SelectList(Enum.GetValues(typeof(Pays))),"Choisissez un pays", new {  @class = "form-control", @required="required" })
+                @Html.ValidationMessageFor(model => model.Pays, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Ville, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.Ville, new { htmlAttributes = new { @class = "form-control" , placeholder = "Strasbourg" } })
+                @Html.ValidationMessageFor(model => model.Ville, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Adresse, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.Adresse, new { htmlAttributes = new { @class = "form-control" , placeholder = "7, rue principale" } })
+                @Html.ValidationMessageFor(model => model.Adresse, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control"} })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+        <hr>
+
+        <h3>Position du panneau</h3>
+
+        <p>Déplacez le marqueur sur la carte pour poser le panneau à sa place.</p>
+
+        <div id="map_new_lieu" style=" height: 300px"></div>
+
+        <br />
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Latitude, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-sm-10">
+            @Html.EditorFor(model => model.Latitude, new { htmlAttributes = new { @id = "latitude_field", @class = "form-control", placeholder = "---", @readonly = true } })
+                @Html.ValidationMessageFor(model => model.Latitude, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Longitude, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-sm-10">
+            @Html.EditorFor(model => model.Longitude, new { htmlAttributes = new { @id = "longitude_field", @class = "form-control", placeholder = "---", @readonly = true } })
+                @Html.ValidationMessageFor(model => model.Longitude, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-10">
+            <button type="submit" id="btn_creation" class="btn btn-primary" disabled>Soumettre</button>
+            </div>
+        </div>
+
+
+        
+    
+}
+
+
+
+<script>
+    var map = L.map('map_new_lieu').setView([46.86, 3.16], 4);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    var myMarker = L.marker([46.86, 3.16], { title: "Nouveau Panneau", alt: "Nouveau Panneau", draggable: true })
+        .addTo(map)
+        .on('dragend', function () {
+            $("#latitude_field").val(myMarker.getLatLng().lat);
+            $("#longitude_field").val(myMarker.getLatLng().lng);
+            $("#btn_creation").prop('disabled', false)
+        });
+</script>

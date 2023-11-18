@@ -9,12 +9,13 @@ namespace DouVoitOn.Models
         public string Nom { get; set; }
         public string Latitude { get; set; }
         public string Longitude { get; set; }
-        public Pays Pays { get; set; }
+        public string Pays { get; set; }
         public string? Ville { get; set; }
         public string? Adresse { get; set; }
 
         [DataType(DataType.MultilineText)]
         public string? Description { get; set; }
+        public bool Activated { get; set; }
     }
 
 

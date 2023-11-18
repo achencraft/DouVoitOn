@@ -4,11 +4,179 @@
     ViewData["Title"] = "Lieu";
 }
 
-<h1>Créer un nouveau lieu</h1>
+<h1>Modifier un lieu existant</h1>
 
-<p>Vous pouvez demander la création d'un nouveau lieu à l'aide de formulaire.<br />
-   Le nouveau ne sera pas activé de suite, un administrateur doit l'approuver pour éviter les doublons.
+<p>
+    ADMIN ONLY
 </p>
 
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
 
-@ViewBag.Lieu.Nom;
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+        <h3>Position du Lieu</h3>
+
+        <p>Déplacez le marqueur sur la carte pour poser le lieu à sa place.</p>
+
+        <div id="map_new_lieu" style=" height: 300px"></div>
+
+        <br />
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Latitude, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.Latitude, new { htmlAttributes = new { @id = "latitude_field", @class = "form-control", placeholder = "---", @readonly = true } })
+                @Html.ValidationMessageFor(model => model.Latitude, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Longitude, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.Longitude, new { htmlAttributes = new { @id = "longitude_field", @class = "form-control", placeholder = "---", @readonly = true } })
+                @Html.ValidationMessageFor(model => model.Longitude, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Pays, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.Pays, new { htmlAttributes = new { @id = "Pays_field",@class = "form-control" , placeholder = "---", @readonly = true } })
+                @Html.ValidationMessageFor(model => model.Pays, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Ville, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.Ville, new { htmlAttributes = new { @id = "Ville_field",@class = "form-control" , placeholder = "---", @readonly = true } })
+                @Html.ValidationMessageFor(model => model.Ville, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Adresse, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.Adresse, new { htmlAttributes = new { @id = "Adresse_field", @class = "form-control" , placeholder = "---", @readonly = true } })
+                @Html.ValidationMessageFor(model => model.Adresse, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Nom, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.Nom, new { htmlAttributes = new { @id = "Name_field", @class = "form-control", placeholder = "centre-ville", @required="required" } })
+                @Html.ValidationMessageFor(model => model.Nom, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @id = "Desc_field", @class = "form-control"} })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Activated, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.CheckBoxFor(model => model.Activated, new { @id = "Active_field" })
+                @Html.ValidationMessageFor(model => model.Activated, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-10">
+                @Html.HiddenFor(model => model.Id, new { htmlAttributes = new { @id = "ID_field", @class = "form-control"} })
+                @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <p>Le lieu sera affiché comme : <span id="confirm_name" style="font-weight:bold"></span></p>
+
+        <div class="form-group row">
+            <div class="col-sm-10">
+                <button type="submit" id="btn_creation" class="btn btn-primary">Sauvegarder</button>
+            </div>
+        </div>
+
+    </div>
+
+
+
+}
+
+
+
+<script>
+
+    $(document).ready(function () {
+       /* $("#Pays_field").val("@ViewBag.Lieu.Pays");
+        $("#Ville_field").val("@ViewBag.Lieu.Ville");
+        $("#Adresse_field").val("@ViewBag.Lieu.Adresse");
+        $("#Name_field").val("@ViewBag.Lieu.Nom");
+        $("#latitude_field").val("@ViewBag.Lieu.Latitude");
+        $("#longitude_field").val("@ViewBag.Lieu.Longitude");
+        $("#Desc_field").val("@ViewBag.Lieu.Description");
+        $("#Active_field").val("@ViewBag.Lieu.Activated");
+        $("#ID_field").val("@ViewBag.Lieu.Id");*/
+
+        map.flyTo([@ViewBag.Lieu.Latitude, @ViewBag.Lieu.Longitude], 15);
+        $("#confirm_name").text("@ViewBag.Lieu.Ville - @ViewBag.Lieu.Nom");
+    });
+
+
+    var map = L.map('map_new_lieu').setView([46.86, 3.16], 4);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    var myMarker = L.marker([@ViewBag.Lieu.Latitude, @ViewBag.Lieu.Longitude], { title: "Nouveau Panneau", alt: "Nouveau Panneau", draggable: true })
+        .addTo(map)
+        .on('dragend', function () {
+            $("#latitude_field").val(myMarker.getLatLng().lat);
+            $("#longitude_field").val(myMarker.getLatLng().lng);
+            $("#btn_creation").prop('disabled', false)
+
+            //recherche données géo
+            $.ajax({
+                url: "https://nominatim.openstreetmap.org/reverse?lat=" + myMarker.getLatLng().lat + "&lon=" + myMarker.getLatLng().lng + "&format=json",
+                method: "GET",
+                dataType: "json"
+            }).done(function (response) {
+                $("#Pays_field").val(response["address"]["country"]);
+                $("#Ville_field").val(response["address"]["village"]);
+                $("#Adresse_field").val(response["display_name"]);
+
+                if (response["address"]["village"] == null) {
+                    $("#Ville_field").val(response["address"]["city"]);
+                    if (response["address"]["city"] == null) {
+                        $("#Ville_field").val(response["address"]["municipality"]);
+                        if (response["address"]["municipality"] == null) {
+                            $("#Ville_field").val(response["address"]["state"]);
+                        }
+                    }
+                }
+
+
+                var nom = $('#Name_field').val();
+                var city = $("#Ville_field").val();
+                if (nom == "") { nom = "Centre" }
+                $("#confirm_name").text(city + " - " + nom);
+            })
+        });
+
+    $('#Name_field').on('input', function () {
+        var nom = $('#Name_field').val();
+        var city = $("#Ville_field").val();
+        if (nom == "") { nom = "Centre" }
+        $("#confirm_name").text(city + " - " + nom);
+    });
+</script>

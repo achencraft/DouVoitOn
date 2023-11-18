@@ -2,7 +2,7 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="row">
+<div class="row" style="margin: 50px">
 
     <div class="col-sm" style="text-align:right;">
         <h2>Mais d'où voit-on</h2>
@@ -21,13 +21,9 @@
                         {
                             <button type="button" class="btn_lieu dropdown-item" data-lieu_id="@lieu.Id">@lieu.Nom</button>
                         }
-                    
-                        <button type="button" class="btn_lieu dropdown-item" data-lieu_id="1">test 1</button>
-                        <button type="button" class="btn_lieu dropdown-item" data-lieu_id="2">test 2</button>
-                        <button type="button" class="btn_lieu dropdown-item" data-lieu_id="3">test 3</button>
                     </div>
                     <hr>
-                    <button type="button" class="dropdown-item">Voir la liste de tous les lieux</button>
+                    <a href="/Lieu" type="button" class="dropdown-item">Voir la liste de tous les lieux</a>
                 </div>
             </div>
         </form>
@@ -41,7 +37,7 @@
 
 
 <div class="row">
-    <div id="map" style=" height: 300px"></div>
+    <div id="map" style=" height: 70vh"></div>
 </div>
 
 
@@ -56,11 +52,12 @@
     var marker_lieu;
 
     $(document).on('click', '.btn_lieu', function () {
-        console.log($(this).text())
-        console.log($(this).data('lieu_id'))
-
         $.get("/Home/GetLieu/" + $(this).data('lieu_id'), null, function (data) {
-            marker_lieu = L.marker([data.latitude, data.longitude]).addTo(map);
+            marker_lieu = L.marker([data.latitude, data.longitude])
+            var menu = '<a href="Lieu/View/' + data.id + '">Consulter</a><br><a href="Lieu/Edit/' + data.id + '">Editer</a>'
+            marker_lieu.bindPopup('<b>' + data.ville + ' - ' + data.nom + '</b><br>' + menu).openPopup();
+            marker_lieu.addTo(map);
+        
             map.flyTo([data.latitude, data.longitude], 15);
         });
 

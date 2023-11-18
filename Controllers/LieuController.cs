@@ -19,8 +19,10 @@ namespace DouVoitOn.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            List<Lieu> lieux = await _context.Lieux.ToListAsync();
+            ViewBag.lieux = lieux;
             return View("/Views/Contribuer/Lieu/Index.cshtml");
         }
 
@@ -30,45 +32,54 @@ namespace DouVoitOn.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> New(IFormCollection fc)
+        public async Task<IActionResult> New(Lieu l)
         {
-            Lieu nouveau_lieu = new Lieu();
-            Pays pays;
+            
             int new_id = 0;
-            Enum.TryParse<Pays>(fc["pays"], out pays);
-
             if (_context.Lieux.Count() > 0)
             {
                 new_id = _context.Lieux.Max(lieu => lieu.Id) + 1;
             }
-
-            nouveau_lieu.Id = new_id;
-            nouveau_lieu.Nom = fc["Nom"];
-            nouveau_lieu.Pays = pays;
-            nouveau_lieu.Ville = fc["Ville"];
-            nouveau_lieu.Adresse = fc["Adresse"];
-            nouveau_lieu.Description = fc["Description"];
-            nouveau_lieu.Latitude = fc["Latitude"];
-            nouveau_lieu.Longitude = fc["Longitude"];
-
-            _context.Lieux.Add(nouveau_lieu);
+            l.Id = new_id;
+            l.Activated = false;
+            _context.Lieux.Add(l);
             _context.SaveChanges();
 
-            return View("/Views/Contribuer/Lieu/Edit.cshtml", new_id);
+            return RedirectToAction("Index", "Lieu");
         }
 
         public async Task<IActionResult> Edit(int id)
         {
-            Lieu lieu = new Lieu();
-            List<Lieu> lieux = await _context.Lieux.ToListAsync();
-            if (lieux.Where(x => x.Id == id).Count() > 0)
+            var lieu = _context.Lieux.Find(id);
+            if (lieu != null)
             {
-                lieu = lieux.Where(x => x.Id == id).First();
+                ViewBag.lieu = lieu;
             }
+            else
+            {
+                return RedirectToAction("Index", "Lieu");
+            }            
+            return View("/Views/Contribuer/Lieu/Edit.cshtml",lieu);
+        }
 
-            ViewBag.lieu = lieu;
+        [HttpPost]
+        public async Task<IActionResult> Edit(Lieu l)
+        {
 
-            return View("/Views/Contribuer/Lieu/Edit.cshtml");
+            var lieu = _context.Lieux.Find(l.Id);
+            if (lieu != null) 
+            {
+                lieu.Nom = l.Nom;
+                lieu.Latitude = l.Latitude;
+                lieu.Longitude = l.Longitude;
+                lieu.Pays = l.Pays;
+                lieu.Ville = l.Ville;
+                lieu.Adresse= l.Adresse;
+                lieu.Description = l.Description;
+                lieu.Activated = l.Activated;
+                _context.SaveChanges();
+            }
+            return RedirectToAction("Index", "Lieu");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

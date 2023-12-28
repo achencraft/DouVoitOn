@@ -18,6 +18,12 @@ namespace DouVoitOn.Models
         public bool Activated { get; set; }
     }
 
+    public class LieuEtPanneaux
+    {
+        public Lieu lieu { get; set; }
+        public List<LieuPanneau> panneaux { get; set; }
+    }
+
 
     public enum Pays
     {

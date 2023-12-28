@@ -34,16 +34,16 @@ body {
 
 .hasNoResults {
     color: #aaa;
-}
-
-.hasNoResults {
     display: block;
     padding: 30px 15px;
 }
 
-.hasNoResults {
+.hasNoValue {
     color: #aaa;
+    display: block;
+    padding: 30px 15px;
 }
+
 
 .dropdown-menu {
     padding: 0;

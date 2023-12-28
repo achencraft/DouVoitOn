@@ -9,13 +9,14 @@
 /* DEBUT JS pour la barre de recherche */
 
 function createAuto(i, elem) {
-    console.log('q');
+
     var input = $(elem);
     var dropdown = input.closest('.dropdown');
     var menu = dropdown.find('.dropdown-menu');
     var listContainer = dropdown.find('.list-autocomplete');
     var listItems = listContainer.find('.dropdown-item');
     var hasNoResults = dropdown.find('.hasNoResults');
+    var hasNoValue = dropdown.find('.hasNoValue');
 
     listItems.hide();
     listItems.each(function () {
@@ -60,12 +61,24 @@ function createAuto(i, elem) {
 
             var count = listItems.filter(':visible').length;
             (count > 0) ? hasNoResults.hide() : hasNoResults.show();
+            (query.length > 0) ? hasNoValue.hide() : hasNoValue.show();
 
         } else {
             listItems.hide();
             dropdown.removeClass('open').removeClass('in');
             hasNoResults.show();
         }
+    });
+
+    input.on('click', function (e) {
+        console.log("click");
+        menu.addClass('show');
+
+        var query = input.val().toLowerCase();
+        (query.length > 0) ? hasNoValue.hide() : hasNoValue.show();
+        if (query.length == 0) hasNoResults.hide();
+
+        
     });
 
     listItems.on('click', function (e) {

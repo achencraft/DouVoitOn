@@ -106,6 +106,15 @@ namespace DouVoitOn.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<bool>("ASupprimer")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("Activated")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<float>("Distance")
+                        .HasColumnType("float");
+
                     b.Property<int>("LieuId")
                         .HasColumnType("int");
 
@@ -118,14 +127,16 @@ namespace DouVoitOn.Migrations
                     b.Property<int>("TypeDirection")
                         .HasColumnType("int");
 
-                    b.Property<float>("distance")
-                        .HasColumnType("float");
+                    b.Property<int>("typePanneauId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("LieuId");
 
                     b.HasIndex("PanneauId");
+
+                    b.HasIndex("typePanneauId");
 
                     b.ToTable("LieuPanneau");
                 });
@@ -135,6 +146,9 @@ namespace DouVoitOn.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<bool>("Activated")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Adresse")
                         .HasColumnType("longtext");
@@ -339,9 +353,17 @@ namespace DouVoitOn.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DouVoitOn.Models.TypePanneau", "typePanneau")
+                        .WithMany()
+                        .HasForeignKey("typePanneauId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Lieu");
 
                     b.Navigation("Panneau");
+
+                    b.Navigation("typePanneau");
                 });
 
             modelBuilder.Entity("DouVoitOn.Models.Route", b =>

@@ -4,10 +4,16 @@
     ViewData["Title"] = "Lieu";
 }
 
-<h1>Modifier un lieu existant</h1>
+<h1>@Model.Ville - @Model.Nom
+    @if (!Model.Activated)
+    {
+        <span class="badge badge-primary" style="background-color:#dc3545;">Lieu non validé</span>
+    }
+</h1>
+<h4>Modifier</h4>
 
 <p>
-    ADMIN ONLY
+    LOGGED ONLY
 </p>
 
 @using (Html.BeginForm())
@@ -80,14 +86,6 @@
             <div class="col-sm-10">
                 @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @id = "Desc_field", @class = "form-control"} })
                 @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group row">
-            @Html.LabelFor(model => model.Activated, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.CheckBoxFor(model => model.Activated, new { @id = "Active_field" })
-                @Html.ValidationMessageFor(model => model.Activated, "", new { @class = "text-danger" })
             </div>
         </div>
 

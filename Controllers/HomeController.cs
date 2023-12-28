@@ -21,15 +21,28 @@ namespace DouVoitOn.Controllers
 
         public async Task<IActionResult> Index()
         {
-            _lieux = await _context.Lieux.ToListAsync();
+            _lieux = await _context.Lieux.Where(l => l.Activated).ToListAsync();
             ViewBag.Lieux = _lieux;
             return View();
         }
 
-        public async Task<Lieu> GetLieu(int id)
+        public LieuEtPanneaux GetLieu(int id)
         {
-            _lieux = await _context.Lieux.ToListAsync();
-            return _lieux.Where(x => x.Id == id).First();
+            LieuEtPanneaux lep = new LieuEtPanneaux();
+            lep.lieu = _context.Lieux.Find(id);
+            if (lep.lieu != null)
+            {
+                var panneaux = _context.LieuPanneau
+                    .Include(p => p.Panneau)
+                    .Include(t => t.typePanneau)
+                    .Where(lp => lp.Lieu.Id == id);
+                if (panneaux.Count() > 0)
+                {
+                    lep.panneaux = panneaux.ToList();
+                }
+                
+            }
+            return lep;
         }
 
         public IActionResult Privacy()

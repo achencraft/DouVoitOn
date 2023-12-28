@@ -1,3 +1,59 @@
 ﻿@{
-    ViewData["Title"] = "Panneau";
+    ViewData["Title"] = "Lieu";
 }
+
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css" />
+<script src="https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster.js"></script>
+
+
+
+<h1>Liste des panneaux</h1>
+
+<div class="row">
+    <div id="map" style=" height: 70vh"></div>
+</div>
+
+
+
+<script>
+    var map = L.map('map').setView([46.86, 3.16], 4);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+
+    var markers = new L.MarkerClusterGroup();
+
+    var redIcon = new L.Icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+
+    @foreach (var l in ViewBag.panneaux)
+    {
+        @:var menu = '<a href="/Panneau/View/@l.Id">Consulter</a><br><a href="/Panneau/Edit/@l.Id">Editer</a>'
+
+
+
+        if (l.Activated)
+        {
+            @:var marker = L.marker([@l.Latitude, @l.Longitude])
+            @:marker.bindPopup("<b>Panneau n°" + @l.Id+"</b><br>" + menu).openPopup();
+        }
+        else
+        {
+            @:var marker = L.marker([@l.Latitude, @l.Longitude], { icon: redIcon })
+            @:marker.bindPopup('<b>Panneau n°'+@l.Id+'</b><br><span style="color:red;">Panneau non validé</span><br>' + menu).openPopup();
+        }
+
+        @:markers.addLayer(marker);
+    }
+    map.addLayer(markers);
+</script>

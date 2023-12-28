@@ -16,10 +16,11 @@
                        placeholder="Saisissez un lieu . . ." autocomplete="off">
                 <div class="dropdown-menu">
                     <i class="hasNoResults">Aucun résultat</i>
+                    <i class="hasNoValue">Saisissez du texte</i>
                     <div class="list-autocomplete">
                         @foreach (var lieu in ViewBag.Lieux)
                         {
-                            <button type="button" class="btn_lieu dropdown-item" data-lieu_id="@lieu.Id">@lieu.Nom</button>
+                            <button type="button" class="btn_lieu dropdown-item" data-lieu_id="@lieu.Id">@lieu.Ville - @lieu.Nom</button>
                         }
                     </div>
                     <hr>
@@ -50,16 +51,43 @@
     }).addTo(map);
 
     var marker_lieu;
+    var markers = [];
+
+    var myicon = L.icon({
+        iconUrl: '/media/panneau.png',
+        shadowUrl: '/media/ombre.png',
+
+        iconSize: [50, 47], // size of the icon
+        shadowSize: [25, 35], // size of the shadow
+        iconAnchor: [25, 47], // point of the icon which will correspond to marker's location
+        shadowAnchor: [0, 35],  // the same for the shadow
+        popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
+    });
 
     $(document).on('click', '.btn_lieu', function () {
         $.get("/Home/GetLieu/" + $(this).data('lieu_id'), null, function (data) {
-            marker_lieu = L.marker([data.latitude, data.longitude])
-            var menu = '<a href="Lieu/View/' + data.id + '">Consulter</a><br><a href="Lieu/Edit/' + data.id + '">Editer</a>'
-            marker_lieu.bindPopup('<b>' + data.ville + ' - ' + data.nom + '</b><br>' + menu).openPopup();
-            marker_lieu.addTo(map);
-        
-            map.flyTo([data.latitude, data.longitude], 15);
+
+            for (m of markers) { 
+                m.remove();
+            }
+            markers = []
+
+            marker_lieu = L.marker([data.lieu.latitude, data.lieu.longitude])
+            var menu = '<a href="Lieu/View/' + data.lieu.id + '">Consulter</a><br><a href="Lieu/Edit/' + data.lieu.id + '">Editer</a>'
+            marker_lieu.bindPopup('<b>' + data.lieu.ville + ' - ' + data.lieu.nom + '</b><br>' + menu).openPopup();
+            markers.push(marker_lieu)
+
+
+            data.panneaux.forEach((p) =>
+                markers.push(L.marker([p.panneau.latitude, p.panneau.longitude], { title: p.panneau.ville, alt: p.panneau.ville, draggable: false, icon: myicon }))
+            );
+
+            for (m of markers) {
+                m.addTo(map);
+            }
+            map.flyTo([data.lieu.latitude, data.lieu.longitude], 15);
         });
+
 
     });
 </script>

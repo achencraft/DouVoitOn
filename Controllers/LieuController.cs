@@ -82,6 +82,28 @@ namespace DouVoitOn.Controllers
             return RedirectToAction("Index", "Lieu");
         }
 
+        public async Task<IActionResult> View(int id)
+        {
+            var lieu = _context.Lieux.Find(id);
+            if (lieu != null)
+            {
+                var panneaux = _context.LieuPanneau
+                    .Include(p => p.Panneau)
+                    .Include(t => t.typePanneau)
+                    .Where(lp => lp.Lieu.Id == id);
+                if (panneaux.Count() > 0)
+                {
+                    ViewBag.panneaux = panneaux;
+                    ViewBag.lieu = lieu;
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index", "Lieu");
+            }
+            return View("/Views/Contribuer/Lieu/View.cshtml", lieu);
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

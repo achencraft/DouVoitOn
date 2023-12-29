@@ -147,18 +147,7 @@
 <script>
 
     $(document).ready(function () {
-       /* $("#Pays_field").val("@ViewBag.Lieu.Pays");
-        $("#Ville_field").val("@ViewBag.Lieu.Ville");
-        $("#Adresse_field").val("@ViewBag.Lieu.Adresse");
-        $("#Name_field").val("@ViewBag.Lieu.Nom");
-        $("#latitude_field").val("@ViewBag.Lieu.Latitude");
-        $("#longitude_field").val("@ViewBag.Lieu.Longitude");
-        $("#Desc_field").val("@ViewBag.Lieu.Description");
-        $("#Active_field").val("@ViewBag.Lieu.Activated");
-        $("#ID_field").val("@ViewBag.Lieu.Id");*/
-
-        map.flyTo([@ViewBag.Lieu.Latitude, @ViewBag.Lieu.Longitude], 15);
-        $("#confirm_name").text("@ViewBag.Lieu.Ville - @ViewBag.Lieu.Nom");
+        map.flyToBounds(panneaux_markers_latlng, { duration: 1 });
     });
 
 
@@ -176,18 +165,19 @@
         shadowSize: [25, 35], // size of the shadow
         iconAnchor: [25, 47], // point of the icon which will correspond to marker's location
         shadowAnchor: [0, 35],  // the same for the shadow
-        popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
+        popupAnchor: [0, -40] // point from which the popup should open relative to the iconAnchor
     });
 
     
     var myMarker = L.marker([@ViewBag.Lieu.Latitude, @ViewBag.Lieu.Longitude], { title: "@ViewBag.Lieu.Nom", alt: "@ViewBag.Lieu.Nom", draggable: false })
         .addTo(map);
-    const panneaux_markers = new Array();
+    const panneaux_markers_latlng = [[@ViewBag.Lieu.Latitude, @ViewBag.Lieu.Longitude]];
 
     @foreach(var p in ViewBag.panneaux)
     {
         <text>var m = L.marker([@p.Panneau.Latitude, @p.Panneau.Longitude], { title: "@p.Panneau.Ville", alt: "@p.Panneau.Ville", draggable: false, icon: myicon }).addTo(map);
-             panneaux_markers.push(m);</text>
+        m.bindPopup('<b>Panneau n°@p.Panneau.Id</b><br />@p.Panneau.Ville<br /> <a href="/Panneau/View/@p.Panneau.Id" > Consulter </a>');
+        panneaux_markers_latlng.push([@p.Panneau.Latitude, @p.Panneau.Longitude]); </text>
     }
 
 

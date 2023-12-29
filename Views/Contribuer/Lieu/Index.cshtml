@@ -26,6 +26,7 @@
 
 
     var markers = new L.MarkerClusterGroup();
+    const panneaux_markers_latlng = new Array();
 
 
     var redIcon = new L.Icon({
@@ -51,6 +52,9 @@
             @:marker.bindPopup('<b>@l.Ville - @l.Nom</b><br><span style="color:red;">Lieu non validé</span><br>' + menu).openPopup();
         }
         @:markers.addLayer(marker);
+        @:panneaux_markers_latlng.push([@l.Latitude, @l.Longitude]);
     }
     map.addLayer(markers);
+
+    map.flyToBounds(panneaux_markers_latlng, { duration: 1 });
 </script>

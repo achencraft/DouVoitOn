@@ -26,6 +26,7 @@
 
 
     var markers = new L.MarkerClusterGroup();
+    const panneaux_markers_latlng = new Array();
 
     var redIcon = new L.Icon({
         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
@@ -54,6 +55,8 @@
         }
 
         @:markers.addLayer(marker);
+        @:panneaux_markers_latlng.push([@l.Latitude, @l.Longitude]);
     }
     map.addLayer(markers);
+    map.flyToBounds(panneaux_markers_latlng, { duration: 1 });
 </script>

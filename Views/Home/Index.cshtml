@@ -61,7 +61,7 @@
         shadowSize: [25, 35], // size of the shadow
         iconAnchor: [25, 47], // point of the icon which will correspond to marker's location
         shadowAnchor: [0, 35],  // the same for the shadow
-        popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
+        popupAnchor: [0, -40] // point from which the popup should open relative to the iconAnchor
     });
 
     $(document).on('click', '.btn_lieu', function () {
@@ -71,6 +71,8 @@
                 m.remove();
             }
             markers = []
+            const panneaux_markers_latlng = [[data.lieu.latitude, data.lieu.longitude]]
+
 
             marker_lieu = L.marker([data.lieu.latitude, data.lieu.longitude])
             var menu = '<a href="Lieu/View/' + data.lieu.id + '">Consulter</a><br><a href="Lieu/Edit/' + data.lieu.id + '">Editer</a>'
@@ -78,14 +80,15 @@
             markers.push(marker_lieu)
 
 
-            data.panneaux.forEach((p) =>
+            data.panneaux.forEach((p) => {
                 markers.push(L.marker([p.panneau.latitude, p.panneau.longitude], { title: p.panneau.ville, alt: p.panneau.ville, draggable: false, icon: myicon }))
-            );
+                panneaux_markers_latlng.push([p.panneau.latitude, p.panneau.longitude])
+            });
 
             for (m of markers) {
                 m.addTo(map);
             }
-            map.flyTo([data.lieu.latitude, data.lieu.longitude], 15);
+            map.flyToBounds(panneaux_markers_latlng, { duration: 1 });
         });
 
 

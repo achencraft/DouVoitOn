@@ -150,7 +150,10 @@
     $(document).ready(function () {
        
 
-        map.flyTo([@ViewBag.panneau.Latitude, @ViewBag.panneau.Longitude], 15);
+        map.flyTo([@ViewBag.panneau.Latitude, @ViewBag.panneau.Longitude], 15, {
+            animate: true,
+            duration: 1 // in seconds
+        });
 
     });
 
